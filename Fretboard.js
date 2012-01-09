@@ -34,6 +34,15 @@ var fretX2 = fretX1 + fretboardWidth;
 
 var strings = [], frets = [], clickRegions = [];
 
+function init(stringCount,fretCount)
+{
+	numStrings = stringCount;
+	numFrets = fretCount;
+	setStrings();
+	setFrets();
+	setClickRegions();
+}
+
 function setClickRegions()
 {
 	var i = 0;
@@ -47,6 +56,24 @@ function setClickRegions()
 	}
 }
  
+function setStrings()
+{
+	for(var i = 0; i < numStrings; i++)
+	{
+		var stringX = fretboardMargin + fretEdgeGap + i * stringSpacing;
+		strings[i] = {x: stringX, y1: stringY1, y2: stringY2, id: i};
+	}
+}
+
+function setFrets()
+{
+	for(var i = 0; i <= numFrets; i++)
+	{
+		var fretY = fretboardMargin + (i + 1) * fretSpacing;
+		frets[i] = {x1: fretX1, x2: fretX2, y: fretY, id: i};
+	}
+}
+
 function createClickRegion(s,f,i)
 {
 	var r = {};
@@ -64,6 +91,7 @@ function createClickRegion(s,f,i)
 
 function drawString(context, s)
 {	
+	context.beginPath();
 	context.moveTo(s.x - 0.5, s.y1 - 0.5);
 	context.lineTo(s.x - 0.5, s.y2 - 0.5);
 	context.stroke();
@@ -71,6 +99,7 @@ function drawString(context, s)
 
 function drawFret(context, f)
 {
+	context.beginPath();
 	context.moveTo(f.x1 - 0.5, f.y - 0.5);
 	context.lineTo(f.x2 - 0.5, f.y - 0.5);
 	context.stroke();
@@ -86,21 +115,17 @@ function drawNote(context,region)
 function drawFretboard(context,canvas)
 {	
 	//clear Fretboard
-	context.clearRect(0,0,canvas.width,canvas.height);
+	clearCanvas(canvas);
 
 	//draw strings
 	for(var i = 0; i < numStrings; i++)
 	{
-		var stringX = fretboardMargin + fretEdgeGap + i * stringSpacing;
-		strings[i] = {x: stringX, y1: stringY1, y2: stringY2, id: i};
 		drawString(context, strings[i]);
 	}
 	
 	//draw frets
 	for(var i = 0; i <= numFrets; i++)
 	{
-		var fretY = fretboardMargin + (i + 1) * fretSpacing;
-		frets[i] = {x1: fretX1, x2: fretX2, y: fretY, id: i};
 		drawFret(context, frets[i]);		
 	}
 
@@ -113,6 +138,13 @@ function drawFretboard(context,canvas)
 			drawNote(context,r);
 		}
 	}
+}
+
+function clearCanvas(canvas)
+{
+	var ctx = canvas.getContext("2d");
+	ctx.setTransform(1,0,0,1,0,0);
+	ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 
 function getClickedRegion(x, y)
@@ -169,8 +201,8 @@ function createFretboard(canvasEl, canvasParaEl)
 		if(context)
 		{
 			context.lineWidth = 1;
+			init(6,4);
 			drawFretboard(context,canvasEl);
-			setClickRegions();
 
 			//listener
 			canvasEl.addEventListener('click', function(e) {
@@ -184,7 +216,7 @@ function createFretboard(canvasEl, canvasParaEl)
 					toggle(region);
 					context.lineWidth = 1;
 					drawFretboard(context,canvasEl);
-					output = region.id + ' clicked: ' + region.isClicked;	
+					output = region.id + ' clicked ' + region.isClicked;	
 				}
 				else
 				{
