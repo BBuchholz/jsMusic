@@ -84,35 +84,82 @@ function createOctaveKeys(octaveNum)
 
 function createWhiteKey(wki, ki)
 {
-	var x = wki * whiteKeyWidth + keyboardMargin;
-	var y = keyboardMargin;
-	var w = whiteKeyWidth;
-	var h = whiteKeyHeight;	
-	return {x: x, y: y, w: w, h: h, id: ki};
+	var key = {};
+	key.x = wki * whiteKeyWidth + keyboardMargin;
+	key.y = keyboardMargin;
+	key.w = whiteKeyWidth;
+	key.h = whiteKeyHeight;	
+	key.centerX = key.x + whiteKeyWidth / 2;
+	key.nr = whiteKeyWidth / 4;
+	key.centerY = key.y + whiteKeyHeight - key.nr * 2;
+	key.id = ki;
+	key.isClicked = false;
+	return key;
 }
 
 function createBlackKey(bki, ki)
 {
-	var x = (bki + 1) * whiteKeyWidth - (blackKeyWidth * 0.5) + keyboardMargin;
-	var y = keyboardMargin;
-	var w = blackKeyWidth;
-	var h = blackKeyHeight;
-	return {x: x, y: y, w: w, h: h, id: ki};
+	var key = {};
+	key.x = (bki + 1) * whiteKeyWidth - (blackKeyWidth * 0.5) + keyboardMargin;
+	key.y = keyboardMargin;
+	key.w = blackKeyWidth;
+	key.h = blackKeyHeight;
+	key.centerX = key.x + blackKeyWidth / 2;
+	key.nr = blackKeyWidth / 4;
+	key.centerY = key.y + blackKeyHeight - key.nr * 2;
+	key.id = ki;
+	key.isClicked = false;
+	return key;
 }
 
 function drawWhiteKey(context, w)
 {
+	context.beginPath();
 	context.strokeStyle = "black";
 	context.strokeRect(w.x - 0.5,w.y - 0.5,w.w,w.h);	
+	if(w.isClicked)
+	{
+		drawWhiteKeyNote(context, w);
+	}
 }
 
 function drawBlackKey(context, b)
 {
+	context.beginPath();
+	context.fillStyle = "black";
 	context.fillRect(b.x - 0.5,b.y - 0.5,b.w,b.h);	
+	if(b.isClicked)
+	{
+		drawBlackKeyNote(context, b);
+	}
 }
 
-function drawKeyboard(context)
+function drawBlackKeyNote(context, b)
 {
+	context.beginPath();
+	context.strokeStyle = "white";
+	context.fillStyle = "white";
+	context.arc(b.centerX,b.centerY,b.nr,0,2 * Math.PI, false);
+	context.closePath();
+	context.stroke();
+	context.fill();
+}
+
+function drawWhiteKeyNote(context, w)
+{
+	context.beginPath();
+	context.strokeStyle = "black";
+	context.fillStyle = "black";
+	context.arc(w.centerX,w.centerY,w.nr,0,2 * Math.PI, false);
+	context.closePath();
+	context.stroke();
+	context.fill();
+}
+
+function drawKeyboard(canvas,context)
+{
+	clearCanvas(canvas,context);
+
 	for(var i = 0; i < whiteKeys.length; i++)
 	{
 		drawWhiteKey(context,whiteKeys[i]);
@@ -126,6 +173,12 @@ function drawKeyboard(context)
 			drawBlackKey(context,blackKeys[i]);
 		}
 	}
+}
+
+function clearCanvas(canvas,context)
+{
+	context.setTransform(1,0,0,1,0,0);
+	context.clearRect(0,0,canvas.width,canvas.height);
 }
 
 function getClickedKey(x,y)
@@ -179,8 +232,21 @@ function loadToDiv(divId)
 	createKeyboard(canvas, p);
 }
 	
+function toggle(region)
+{
+	region.isClicked = !region.isClicked;
+}
+
+function init(octaveCount)
+{
+	numOctaves = octaveCount;
+	keyboardWidth = octaveWidth * numOctaves;
+	createKeys();
+}
+
 function createKeyboard(canvasEl, canvasParaEl) 
 {
+	init(3);
 	canvasEl.height = keyboardHeight + keyboardMargin * 2;
 	canvasEl.width = keyboardWidth + keyboardMargin * 2;
 	
@@ -191,10 +257,9 @@ function createKeyboard(canvasEl, canvasParaEl)
 		var context = canvasEl.getContext("2d");
 		if(context)
 		{
-			createKeys();
 			context.lineWidth = 1;
 
-			drawKeyboard(context);
+			drawKeyboard(canvasEl, context);
 			
 			//listener
 			canvasEl.addEventListener('click', function(e) {
@@ -205,7 +270,9 @@ function createKeyboard(canvasEl, canvasParaEl)
 
 				if(region)
 				{
-					output = 'clicked ' + region.id;	
+					toggle(region);
+					drawKeyboard(canvasEl,context);
+					output = 'clicked ' + region.id + ' ' + region.isClicked;	
 				}
 				else
 				{
