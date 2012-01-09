@@ -108,7 +108,7 @@ function drawFret(context, f)
 function drawNote(context,region)
 {
 	context.beginPath();
-	context.arc(region.centerX,region.centerY,stringSpacing/2,0,2 * Math.PI, false);
+	context.arc(region.centerX,region.centerY,stringSpacing/3,0,2 * Math.PI, false);
 	context.stroke();
 }
 
