@@ -41,20 +41,24 @@ function setClickRegions()
 	{
 		for(f in frets)
 		{
-			clickRegions[i] = createClickRegion(strings[s],frets[f]);
+			clickRegions[i] = createClickRegion(strings[s],frets[f],i);
 			i++;			
 		}
 	}
 }
  
-function createClickRegion(s,f)
+function createClickRegion(s,f,i)
 {
 	var r = {};
 	r.x = s.x - stringSpacing / 2;
 	r.y = f.y - fretSpacing;
 	r.w = stringSpacing;
 	r.h = fretSpacing;
+	r.centerX = s.x;
+	r.centerY = r.y + fretSpacing / 2;
 	r.id = "string " + s.id + " fret " + f.id;
+	r.index = i;
+	r.isClicked = false;
 	return r;
 }
 
@@ -72,8 +76,18 @@ function drawFret(context, f)
 	context.stroke();
 }
 
-function drawFretboard(context)
+function drawNote(context,region)
+{
+	context.beginPath();
+	context.arc(region.centerX,region.centerY,stringSpacing/2,0,2 * Math.PI, false);
+	context.stroke();
+}
+
+function drawFretboard(context,canvas)
 {	
+	//clear Fretboard
+	context.clearRect(0,0,canvas.width,canvas.height);
+
 	//draw strings
 	for(var i = 0; i < numStrings; i++)
 	{
@@ -89,11 +103,21 @@ function drawFretboard(context)
 		frets[i] = {x1: fretX1, x2: fretX2, y: fretY, id: i};
 		drawFret(context, frets[i]);		
 	}
+
+	//highlight clicked notes
+	for(var i = 0; i < clickRegions.length; i++)
+	{
+		var r = clickRegions[i];
+		if(r.isClicked)
+		{
+			drawNote(context,r);
+		}
+	}
 }
 
 function getClickedRegion(x, y)
 {
-	var isClicked = false;
+	var clickedRegion = false;
 	
 	for(var i = 0; i < clickRegions.length; i++)
 	{
@@ -106,10 +130,10 @@ function getClickedRegion(x, y)
 		   bottomEdge >= y &&
 		   topEdge <= y)
 		{
-			isClicked = region;
+			clickedRegion = region;
 		}
 	}
-	return isClicked;
+	return clickedRegion;
 }
 
 function loadToDiv(divId)
@@ -126,6 +150,11 @@ function loadToDiv(divId)
 	
 	createFretboard(canvas, p);
 }	
+
+function toggle(region)
+{
+	clickRegions[region.index].isClicked = !clickRegions[region.index].isClicked;
+}
 	
 function createFretboard(canvasEl, canvasParaEl) 
 {	
@@ -140,9 +169,9 @@ function createFretboard(canvasEl, canvasParaEl)
 		if(context)
 		{
 			context.lineWidth = 1;
-			drawFretboard(context);
+			drawFretboard(context,canvasEl);
 			setClickRegions();
-			
+
 			//listener
 			canvasEl.addEventListener('click', function(e) {
 				
@@ -152,7 +181,10 @@ function createFretboard(canvasEl, canvasParaEl)
 
 				if(region)
 				{
-					output = 'clicked ' + region.id;	
+					toggle(region);
+					context.lineWidth = 1;
+					drawFretboard(context,canvasEl);
+					output = region.id + ' clicked: ' + region.isClicked;	
 				}
 				else
 				{
