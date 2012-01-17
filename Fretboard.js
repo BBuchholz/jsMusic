@@ -43,6 +43,33 @@ function init(stringCount,fretCount)
 	setClickRegions();
 }
 
+function getClickedIdArray()
+{
+	var clicked = [];
+	for(var i = 0; i < clickRegions.length; i++)
+	{
+		if(clickRegions[i].isClicked)
+		{
+			clicked.push(clickRegions[i].id);
+		}
+	}
+	return clicked;
+}
+
+function clickedIdArrayToString(idArray)
+{
+	var keyString = "";
+	for(var i = 0; i < idArray.length; i++)
+	{
+		if(i != 0)
+		{
+			keyString += ", ";
+		}
+		keyString += idArray[i];
+	}
+	return keyString;
+}
+
 function setClickRegions()
 {
 	var i = 0;
@@ -83,7 +110,7 @@ function createClickRegion(s,f,i)
 	r.h = fretSpacing;
 	r.centerX = s.x;
 	r.centerY = r.y + fretSpacing / 2;
-	r.id = "string " + s.id + " fret " + f.id;
+	r.id = "{s:" + s.id + "-f:" + f.id + "}";
 	r.index = i;
 	r.isClicked = false;
 	return r;
@@ -216,12 +243,10 @@ function createFretboard(canvasEl, canvasParaEl)
 					toggle(region);
 					context.lineWidth = 1;
 					drawFretboard(context,canvasEl);
-					output = region.id + ' clicked ' + region.isClicked;	
 				}
-				else
-				{
-					output = 'no region clicked';
-				}
+
+				var idStr = clickedIdArrayToString(getClickedIdArray());
+				output += "Selected Ids: " + idStr;
 
 				canvasParaEl.innerHTML = output;
 
