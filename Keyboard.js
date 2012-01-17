@@ -41,6 +41,34 @@ function createKeys()
 	}
 }
 
+function getHighlightedKeyIndexes()
+{
+	var highlighted = [];
+	for(var i = 0; i < allKeys.length; i++)
+	{
+		if(allKeys[i].isClicked)
+		{
+			highlighted.push(i);
+		}
+	}
+	return highlighted;
+}
+
+function highlightedIndexArrayToString(indexArray)
+{
+	var keyString = "";
+	for(var i = 0; i < indexArray.length; i++)
+	{
+		if(i != 0)
+		{
+			keyString += ", ";
+		}
+
+		keyString += indexArray[i].toString();
+	}
+	return keyString;
+}
+
 function createOctaveKeys(octaveNum)
 {
 	var whiteKeyIndex = octaveNum * 7;
@@ -272,12 +300,10 @@ function createKeyboard(canvasEl, canvasParaEl)
 				{
 					toggle(region);
 					drawKeyboard(canvasEl,context);
-					output = 'clicked ' + region.id + ' ' + region.isClicked;	
 				}
-				else
-				{
-					output = 'no region clicked';
-				}
+				
+				var indxStr = highlightedIndexArrayToString(getHighlightedKeyIndexes()); 
+				output += "Selected Indexes: " + indxStr;
 
 				canvasParaEl.innerHTML = output;
 
