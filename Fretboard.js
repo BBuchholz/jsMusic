@@ -195,7 +195,7 @@ function getClickedRegion(x, y)
 	return clickedRegion;
 }
 
-function loadToDiv(divId)
+function loadFretboardToDiv(divId)
 {
 	var canvas = document.createElement("canvas");
 	canvas.id = "fretboard1";

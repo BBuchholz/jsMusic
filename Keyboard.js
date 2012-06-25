@@ -245,7 +245,7 @@ function testClickedKey(keys, x, y)
 	return isClicked;
 }
 
-function loadToDiv(divId)
+function loadKeyboardToDiv(divId)
 {
 	var canvas = document.createElement("canvas");
 	canvas.id = "keyboard1";
