@@ -33,43 +33,46 @@ var keyboardHeight = whiteKeyHeight;
 
 var whiteKeys = [], blackKeys = [], allKeys = [];
 
-function createKeys()
+function createKeys(divIndex)
 {
 	for(var i = 0; i < numOctaves; i++)
 	{
-		createOctaveKeys(i);
+		createOctaveKeys(i,divIndex);
 	}
 }
 
 function getHighlightedKeyIndexes()
 {
 	var highlighted = [];
-	for(var i = 0; i < allKeys.length; i++)
+	for(var j = 0; j < allKeys.length; j++)
 	{
-		if(allKeys[i].isClicked)
+		highlighted[j] = new Array();
+		for(var i = 0; i < allKeys[j].length; i++)
 		{
-			highlighted.push(i);
+			if(allKeys[j][i].isClicked)
+			{
+				highlighted[j].push(i);
+			}
 		}
 	}
 	return highlighted;
 }
 
-function highlightedIndexArrayToString(indexArray)
+function highlightedIndexArrayToString(indexArray, divIndex)
 {
 	var keyString = "";
-	for(var i = 0; i < indexArray.length; i++)
+	for(var i = 0; i < indexArray[divIndex].length; i++)
 	{
 		if(i != 0)
 		{
 			keyString += ", ";
 		}
-
-		keyString += indexArray[i].toString();
+		keyString += indexArray[divIndex][i].toString();
 	}
 	return keyString;
 }
 
-function createOctaveKeys(octaveNum)
+function createOctaveKeys(octaveNum, divIndex)
 {
 	var whiteKeyIndex = octaveNum * 7;
 	var blackKeyIndex = octaveNum * 7;
@@ -87,9 +90,9 @@ function createOctaveKeys(octaveNum)
 			case 7:
 			case 9:
 			case 11:
-				key = createWhiteKey(whiteKeyIndex, keyboardIndex);
-				whiteKeys[whiteKeyIndex] = key;
-				allKeys[keyboardIndex] = key;
+				key = createWhiteKey(whiteKeyIndex, keyboardIndex, divIndex);
+				whiteKeys[divIndex][whiteKeyIndex] = key;
+				allKeys[divIndex][keyboardIndex] = key;
 				whiteKeyIndex++;
 				break;				
 			case 6:
@@ -98,9 +101,9 @@ function createOctaveKeys(octaveNum)
 			case 3:
 			case 8:
 			case 10:
-				key = createBlackKey(blackKeyIndex, keyboardIndex);
-				blackKeys[blackKeyIndex] = key;
-				allKeys[keyboardIndex] = key;
+				key = createBlackKey(blackKeyIndex, keyboardIndex, divIndex);
+				blackKeys[divIndex][blackKeyIndex] = key;
+				allKeys[divIndex][keyboardIndex] = key;
 				blackKeyIndex++;
 				break;
 		}
@@ -110,7 +113,7 @@ function createOctaveKeys(octaveNum)
 	return key;
 }
 
-function createWhiteKey(wki, ki)
+function createWhiteKey(wki, ki, divIndex)
 {
 	var key = {};
 	key.x = wki * whiteKeyWidth + keyboardMargin;
@@ -121,11 +124,12 @@ function createWhiteKey(wki, ki)
 	key.nr = whiteKeyWidth / 4;
 	key.centerY = key.y + whiteKeyHeight - key.nr * 2;
 	key.id = ki;
+	key.divId = divIndex;
 	key.isClicked = false;
 	return key;
 }
 
-function createBlackKey(bki, ki)
+function createBlackKey(bki, ki, divIndex)
 {
 	var key = {};
 	key.x = (bki + 1) * whiteKeyWidth - (blackKeyWidth * 0.5) + keyboardMargin;
@@ -136,6 +140,7 @@ function createBlackKey(bki, ki)
 	key.nr = blackKeyWidth / 4;
 	key.centerY = key.y + blackKeyHeight - key.nr * 2;
 	key.id = ki;
+	key.divId = divIndex;
 	key.isClicked = false;
 	return key;
 }
@@ -184,21 +189,21 @@ function drawWhiteKeyNote(context, w)
 	context.fill();
 }
 
-function drawKeyboard(canvas,context)
+function drawKeyboard(canvas,context,divIndex)
 {
 	clearKeyboardCanvas(canvas,context);
 
-	for(var i = 0; i < whiteKeys.length; i++)
-	{
-		drawWhiteKey(context,whiteKeys[i]);
+	for(var i = 0; i < whiteKeys[divIndex].length; i++)
+	{	
+		drawWhiteKey(context,whiteKeys[divIndex][i]);
 	}
 	
-	for(var i = 0; i < blackKeys.length; i++)
+	for(var i = 0; i < blackKeys[divIndex].length; i++)
 	{
 		//some indexes will be null
-		if(blackKeys[i])
+		if(blackKeys[divIndex][i])
 		{
-			drawBlackKey(context,blackKeys[i]);
+			drawBlackKey(context,blackKeys[divIndex][i]);
 		}
 	}
 }
@@ -211,6 +216,8 @@ function clearKeyboardCanvas(canvas,context)
 
 function getClickedKey(x,y)
 {
+	alert("x:" + x + " y:" + y);
+
 	var isClicked = testClickedKey(blackKeys,x,y);
 	
 	if(!isClicked)
@@ -225,39 +232,47 @@ function testClickedKey(keys, x, y)
 {
 	var isClicked = false;
 	
-	for(var i = 0; i < keys.length; i++)
+	for(var j = 0; j < keys.length; j++)
 	{
-		var key = keys[i];
-		if(key)
+		for(var i = 0; i < keys[j].length; i++)
 		{
-			var leftEdge = key.x, rightEdge = key.x + key.w;
-			var topEdge = key.y, bottomEdge = key.y + key.h;
+			debugger;
+			var key = keys[j][i];
+			if(key)
+			{
+				var leftEdge = key.x, rightEdge = key.x + key.w;
+				var topEdge = key.y, bottomEdge = key.y + key.h;
 
-			if(rightEdge >= x &&
-			   leftEdge <= x &&
-			   bottomEdge >= y &&
-			   topEdge <= y)
+				if(rightEdge >= x &&
+				   leftEdge <= x &&
+				   bottomEdge >= y &&
+				   topEdge <= y)
 			{
 				isClicked = key;
 			}
+			debugger;
 		}
+	}
 	}
 	return isClicked;
 }
 
-function loadKeyboardToDiv(divId)
+function loadKeyboardToDiv(divId, divIndex)
 {
 	var canvas = document.createElement("canvas");
 	canvas.id = "keyboard_" + divId;
 	
 	var p = document.createElement("p");
 	p.id = "keyboard_" + divId + "_p";
-	
+
+	whiteKeys[divIndex] = new Array();
+	blackKeys[divIndex] = new Array();
+	allKeys[divIndex] = new Array();
 	var div = document.getElementById(divId);
 	div.appendChild(canvas);
 	div.appendChild(p);
-	
-	createKeyboard(canvas, p);
+
+	createKeyboard(canvas, p, divIndex);
 }
 	
 function toggleKeyboardRegion(region)
@@ -265,16 +280,16 @@ function toggleKeyboardRegion(region)
 	region.isClicked = !region.isClicked;
 }
 
-function initKeyboard(octaveCount)
+function initKeyboard(octaveCount,divIndex)
 {
 	numOctaves = octaveCount;
 	keyboardWidth = octaveWidth * numOctaves;
-	createKeys();
+	createKeys(divIndex);
 }
 
-function createKeyboard(canvasEl, canvasParaEl) 
+function createKeyboard(canvasEl, canvasParaEl, divIndex) 
 {
-	initKeyboard(2);
+	initKeyboard(2,divIndex);
 	canvasEl.height = keyboardHeight + keyboardMargin * 2;
 	canvasEl.width = keyboardWidth + keyboardMargin * 2;
 	
@@ -287,7 +302,7 @@ function createKeyboard(canvasEl, canvasParaEl)
 		{
 			context.lineWidth = 1;
 
-			drawKeyboard(canvasEl, context);
+			drawKeyboard(canvasEl, context, divIndex);
 			
 			//listener
 			canvasEl.addEventListener('click', function(e) {
@@ -299,10 +314,10 @@ function createKeyboard(canvasEl, canvasParaEl)
 				if(region)
 				{
 					toggleKeyboardRegion(region);
-					drawKeyboard(canvasEl,context);
+					drawKeyboard(canvasEl,context, divIndex);
 				}
 				
-				var indxStr = highlightedIndexArrayToString(getHighlightedKeyIndexes()); 
+				var indxStr = highlightedIndexArrayToString(getHighlightedKeyIndexes(),divIndex); 
 				output += "Selected Indexes: " + indxStr;
 
 				canvasParaEl.innerHTML = output;
