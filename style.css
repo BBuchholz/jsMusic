@@ -1,5 +1,185 @@
+body {
+	text-align: center;
+	background-color: #000000;
+}
+
+#centeredContainer {
+	background-color: #3c3c3b;
+	color: #c7c8c7;
+	margin: 0 auto;
+	width: 700px;
+	min-height: 800px;
+	text-align: left;
+}
+
+a:link {
+	text-decoration: none;
+	color: #A44747;
+}
+
+a:visited {
+	text-decoration: none;
+	color: #A44747;
+}
+
+a:active {
+	text-decoration: none;
+	color: #A44747;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #A44747;
+}
+
+.nav {
+	background-color: #CFCFCF;
+	color: #24141c;
+	text-align: center;
+	width: 200px;
+	min-height: 700px;
+	border-style: solid;
+	border-width: 2px;
+	border-color: #6f1514;
+}
+
+.navheading {
+	background-color: #6f1514;
+	color: #CFCFCF;
+	margin: 5px;
+	padding: 5px;
+}
+
+
+
+.navcontent {
+	margin: 10px;
+	padding: 10px;
+	border-style: solid;
+	border-width: 0px;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+}
+
+.navtext {
+}
+
+.navlinks > a:link {
+	text-decoration: none;
+	color: #6f1514;
+}
+
+.navlinks > a:visited {
+	text-decoration: none;
+	color: #6f1514;
+}
+
+.navlinks > a:active {
+	text-decoration: none;
+	color: #6f1514;
+}
+
+.navlinks > a:hover {
+	text-decoration: underline;
+	color: #6f1514;
+}
+
+#navleft {
+	margin-left: -75px;
+	float: left;
+}
+
+#navright {
+	margin-right: -75px;
+	float: right;
+}
+
+p {
+	text-align: center;
+}
+
+#header {
+	padding: 20px;
+	text-align: center;
+	margin-bottom: 20px;
+	background-color: #6f1514;
+	color: #F5F5F5;
+}
+
+#content {
+	padding: 20px 150px;
+	text-align: center;
+}
+/*
+#democontent {
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
+	padding: 10px;
+	border-style: solid;
+	border-width: 0px;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+}
+*/
+.fragment {
+	display: block;
+	background-color: #CFCFCF;
+	color: #24141c;
+	margin: 10px;
+	padding: 10px;
+	border-style: solid;
+	border-width: 0px;
+	border-top-width: 1px;
+	border-bottom-width: 1px;
+}
+
+.fragheading {
+	background-color: #6f1514;
+	text-align: left;
+	color: #CFCFCF;
+	margin: 0px;
+	padding: 15px;
+}
+
+.fragcontent {
+	color: #6f1514;
+	margin: 10px;
+	padding: 15px;
+	margin-bottom: 0px;
+}
+
+.fragcontent > a:link {
+	text-decoration: none;
+	color: #6f1514;
+}
+
+.fragcontent > a:visited {
+	text-decoration: none;
+	color: #6f1514;
+}
+
+.fragcontent > a:active {
+	text-decoration: none;
+	color: #6f1514;
+}
+
+.fragcontent > a:hover {
+	text-decoration: underline;
+	color: #6f1514;
+}
+
+/* Round corners *************************************************/ 
+
+.round {
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+
 canvas 
 {
+	color: #FFFFFF;
 	border-style: solid; 
 	border-width: 1px; 
 	border-color: LightGray;

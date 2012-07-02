@@ -248,10 +248,10 @@ function testClickedKey(keys, x, y)
 function loadKeyboardToDiv(divId)
 {
 	var canvas = document.createElement("canvas");
-	canvas.id = "keyboard1";
+	canvas.id = "keyboard_" + divId;
 	
 	var p = document.createElement("p");
-	p.id = "keyboard1p";
+	p.id = "keyboard_" + divId + "_p";
 	
 	var div = document.getElementById(divId);
 	div.appendChild(canvas);
