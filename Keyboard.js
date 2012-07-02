@@ -186,7 +186,7 @@ function drawWhiteKeyNote(context, w)
 
 function drawKeyboard(canvas,context)
 {
-	clearCanvas(canvas,context);
+	clearKeyboardCanvas(canvas,context);
 
 	for(var i = 0; i < whiteKeys.length; i++)
 	{
@@ -203,7 +203,7 @@ function drawKeyboard(canvas,context)
 	}
 }
 
-function clearCanvas(canvas,context)
+function clearKeyboardCanvas(canvas,context)
 {
 	context.setTransform(1,0,0,1,0,0);
 	context.clearRect(0,0,canvas.width,canvas.height);
@@ -260,12 +260,12 @@ function loadKeyboardToDiv(divId)
 	createKeyboard(canvas, p);
 }
 	
-function toggle(region)
+function toggleKeyboardRegion(region)
 {
 	region.isClicked = !region.isClicked;
 }
 
-function init(octaveCount)
+function initKeyboard(octaveCount)
 {
 	numOctaves = octaveCount;
 	keyboardWidth = octaveWidth * numOctaves;
@@ -274,7 +274,7 @@ function init(octaveCount)
 
 function createKeyboard(canvasEl, canvasParaEl) 
 {
-	init(3);
+	initKeyboard(2);
 	canvasEl.height = keyboardHeight + keyboardMargin * 2;
 	canvasEl.width = keyboardWidth + keyboardMargin * 2;
 	
@@ -298,7 +298,7 @@ function createKeyboard(canvasEl, canvasParaEl)
 
 				if(region)
 				{
-					toggle(region);
+					toggleKeyboardRegion(region);
 					drawKeyboard(canvasEl,context);
 				}
 				
