@@ -264,6 +264,25 @@ function loadKeyboardToDiv(divId, divIndex)
 
 	createKeyboard(canvas, p, divIndex);
 }
+
+function loadKeyboardsToDiv(divId, count)
+{
+	var div = document.getElementById(divId);
+
+	var ids = new Array();
+	for(var i = 0; i < count; i++)
+	{
+		var kb = document.createElement("div");
+		kb.id = "keyboardDiv" + i;
+		ids[i] = kb.id;
+		div.appendChild(kb);
+	}
+
+	for(var i = 0; i < ids.length; i++)
+	{
+		loadKeyboardToDiv(ids[i],i);
+	}
+}
 	
 function toggleKeyboardRegion(region)
 {

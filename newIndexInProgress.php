@@ -8,9 +8,7 @@
 	
 	function load(){
 		
-		loadKeyboardToDiv('keyboardDiv1', 0);
-		loadKeyboardToDiv('keyboardDiv2', 1);			
-		loadKeyboardToDiv('keyboardDiv3', 2);
+		loadKeyboardsToDiv('keyboardsDiv', 4);
 		loadFretboardToDiv('fretboardDiv');				
 	}
 	
@@ -37,9 +35,8 @@
 			Keyboard			
 		</div>
 		<div class="fragcontent">
-		  <div id="keyboardDiv1"></div>
-		  <div id="keyboardDiv2"></div>  
-		  <div id="keyboardDiv3"></div>  
+			<div id="keyboardsDiv">
+			</div>
 		</div>
 	</div>		
 	<div class="fragment round">
