@@ -41,33 +41,30 @@ function createKeys(divIndex)
 	}
 }
 
-function getHighlightedKeyIndexes()
+function getHighlightedKeyIndexes(divIndex)
 {
-	var highlighted = [];
-	for(var j = 0; j < allKeys.length; j++)
+	var highlighted = new Array();
+	
+	for(var i = 0; i < allKeys[divIndex].length; i++)
 	{
-		highlighted[j] = new Array();
-		for(var i = 0; i < allKeys[j].length; i++)
+		if(allKeys[divIndex][i].isClicked)
 		{
-			if(allKeys[j][i].isClicked)
-			{
-				highlighted[j].push(i);
-			}
+			highlighted.push(i);
 		}
 	}
 	return highlighted;
 }
 
-function highlightedIndexArrayToString(indexArray, divIndex)
+function highlightedIndexArrayToString(indexArray)
 {
 	var keyString = "";
-	for(var i = 0; i < indexArray[divIndex].length; i++)
+	for(var i = 0; i < indexArray.length; i++)
 	{
 		if(i != 0)
 		{
 			keyString += ", ";
 		}
-		keyString += indexArray[divIndex][i].toString();
+		keyString += indexArray[i].toString();
 	}
 	return keyString;
 }
@@ -214,45 +211,38 @@ function clearKeyboardCanvas(canvas,context)
 	context.clearRect(0,0,canvas.width,canvas.height);
 }
 
-function getClickedKey(x,y)
+function getClickedKey(x,y,divIndex)
 {
-	alert("x:" + x + " y:" + y);
-
-	var isClicked = testClickedKey(blackKeys,x,y);
+	var isClicked = testClickedKey(blackKeys,x,y,divIndex);
 	
 	if(!isClicked)
 	{
-		isClicked = testClickedKey(whiteKeys,x,y);
+		isClicked = testClickedKey(whiteKeys,x,y,divIndex);
 	}
 	
 	return isClicked;
 }
 
-function testClickedKey(keys, x, y)
+function testClickedKey(keys, x, y, divIndex)
 {
 	var isClicked = false;
 	
-	for(var j = 0; j < keys.length; j++)
+	for(var i = 0; i < keys[divIndex].length; i++)
 	{
-		for(var i = 0; i < keys[j].length; i++)
+		var key = keys[divIndex][i];
+		if(key && isClicked == false)
 		{
-			debugger;
-			var key = keys[j][i];
-			if(key)
-			{
-				var leftEdge = key.x, rightEdge = key.x + key.w;
-				var topEdge = key.y, bottomEdge = key.y + key.h;
+			var leftEdge = key.x, rightEdge = key.x + key.w;
+			var topEdge = key.y, bottomEdge = key.y + key.h;
 
-				if(rightEdge >= x &&
-				   leftEdge <= x &&
-				   bottomEdge >= y &&
-				   topEdge <= y)
+			if(rightEdge >= x &&
+			   leftEdge <= x &&
+			   bottomEdge >= y &&
+			   topEdge <= y)
 			{
 				isClicked = key;
 			}
-			debugger;
 		}
-	}
 	}
 	return isClicked;
 }
@@ -309,7 +299,7 @@ function createKeyboard(canvasEl, canvasParaEl, divIndex)
 				
 				var x = e.offsetX, y = e.offsetY;
 				var output = '';
-				var region = getClickedKey(x, y);
+				var region = getClickedKey(x, y, divIndex);
 
 				if(region)
 				{
@@ -317,7 +307,7 @@ function createKeyboard(canvasEl, canvasParaEl, divIndex)
 					drawKeyboard(canvasEl,context, divIndex);
 				}
 				
-				var indxStr = highlightedIndexArrayToString(getHighlightedKeyIndexes(),divIndex); 
+				var indxStr = highlightedIndexArrayToString(getHighlightedKeyIndexes(divIndex)); 
 				output += "Selected Indexes: " + indxStr;
 
 				canvasParaEl.innerHTML = output;
